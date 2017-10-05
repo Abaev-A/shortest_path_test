@@ -23,7 +23,7 @@ namespace Test
             ParseInitArgs(args);
 
             FindShortestRoute();
-            if (result[1] == null)
+            if (result[0] == null)
             {
                 Console.WriteLine("Самый короткий путь вышел за рамки рабочего времени. Ответов нет!\n");
                 Console.ReadLine();
