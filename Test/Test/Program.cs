@@ -357,14 +357,40 @@ namespace Test
                 }
             }
 
-            for (int i = 0, iter = all_stop_count; i < repeats.Count; i++)
+            List<List<int>> tmp3 = new List<List<int>>();
+
+            for (int i = 0, iter = all_stop_count, iter2 = 0; i < repeats.Count; i++)
             {
+                if(repeats[i].Second.Count > 2)
+                {
+                    tmp3.Add(new List<int>());
+                    iter2++;
+                }
                 for (int j = 1; j < repeats[i].Second.Count; j++)
                 {
                     graph_ext.matrx[repeats[i].First, iter] = graph_ext.matrx[iter, repeats[i].First] = -1; // Вес ребра неизвестен, будет просчитан во время алгоритма
+
+                    if (repeats[i].Second.Count > 2)
+                    {
+                        tmp3[iter2-1].Add(iter);
+                    }
                     iter++;
                 }
             }
+
+            for(int x = 0; x < tmp3.Count; x++)
+            {
+                for (int i = 0; i < tmp3[x].Count; i++)
+                {
+                    for (int j = 0; j < tmp3[x].Count; j++)
+                    {
+                        if (i != j)
+                            graph_ext.matrx[tmp3[x][i], tmp3[x][j]] = graph_ext.matrx[tmp3[x][j], tmp3[x][i]] = -1;
+                    }
+                }
+            }
+     
+
 
 
             // Список содержаший комбинации кратчайших путей от начальной точки до конечной
@@ -581,7 +607,7 @@ namespace Test
                                 tmp_sum += price[l];
                             }
 
-                            is_undirect = (!by_price && gr.matrx[branch[k].arr.Last().Stop, l] != -1) ? true : !visited[l];
+                            is_undirect =  (!by_price /*&& gr.matrx[branch[k].arr.Last().Stop, l] != -1*/) ? true : !visited[l];
 
                             if (gr.matrx[branch[k].arr.Last().Stop, l] != 0 && is_undirect &&  tmp_sum < weights[l])
                             {
