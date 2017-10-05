@@ -146,7 +146,7 @@ namespace Test
                 List<int> log = new List<int>();
                 int time = RouteTime(this, log: log);
 
-                tmp += string.Format("\t{0} Начало. Ждем на остановке {1}, автобус {2}\n", TimeSpan.FromMinutes(start_time).ToString(@"hh\:mm"), arr[0].Stop + 1, arr[0].Bus + 1);
+                tmp += string.Format("\t{0} Начало. Ждем!\n", TimeSpan.FromMinutes(start_time).ToString(@"hh\:mm"));
                 tmp += string.Format("\t{0} Посадка на остановке {1}, автобус {2}\n", TimeSpan.FromMinutes(log[0]).ToString(@"hh\:mm"), arr[0].Stop + 1, arr[0].Bus + 1);
 
                 for (int i = 1; i < arr.Count; i++)
