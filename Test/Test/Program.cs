@@ -31,11 +31,15 @@ namespace Test
             }
             FindCheapestRoute();
 
-            if (RoutePrice(result[1]) == RoutePrice(result[0]))            
-                result[0] = result[1];           
+            if (RoutePrice(result[1]) == RoutePrice(result[0])){
+                result[1] = result[0];
+            }
+            else if (RouteTime(result[1]) == RouteTime(result[0])){
+                result[0] = result[1];
+            }
 
-            Console.WriteLine("Самый дешевый маршрут:\n\n" + result[0].Description());
-            Console.WriteLine("Самый короткий по времени маршрут:\n\n" + result[1].Description());
+            Console.WriteLine("Самый короткий по времени маршрут:\n\n" + result[0].Description());
+            Console.WriteLine("Самый дешевый маршрут:\n\n" + result[1].Description());
             Console.ReadLine();
         }
 
@@ -406,11 +410,7 @@ namespace Test
                         }
                     }
 
-                    Route tmp = new Route();
-                    tmp.arr = new List<Route.Node>();
-                    tmp.arr.Add(new Route.Node(start_point_graphs[i], start_stop));
-
-                    rg_routes.Add(DijkstraModified(graph_ext, st, fn, st_time: RouteTime(tmp), conv_bus: conv_bus, conv_stop: conv_stop));
+                    rg_routes.Add(DijkstraModified(graph_ext, st, fn, st_time: NearestBus(start_point_graphs[i], start_stop, start_time), conv_bus: conv_bus, conv_stop: conv_stop));
                 }
             }
 
@@ -427,7 +427,7 @@ namespace Test
                     rg_routes[0].arr[i] = new Route.Node(conv_bus[stop], conv_stop[stop]);
                 }
 
-                result[1] = rg_routes[0];
+                result[0] = rg_routes[0];
             }
         }
 
@@ -518,20 +518,20 @@ namespace Test
 
                     if (RouteTime(result_route) < MAX_TIME)
                     {
-                        result[0] = result_route;
+                        result[1] = result_route;
                         break;
                     }
                     else
                     {
-                        if(RoutePrice(result[1]) == RoutePrice(result_route))
+                        if(RoutePrice(result[0]) == RoutePrice(result_route))
                         {
-                            result[0] = result_route;
+                            result[1] = result[0];
                             break;
                         }
                     }
                 }
 
-                if (result[0] != null) break;
+                if (result[1] != null) break;
             }
         }
           
@@ -540,6 +540,7 @@ namespace Test
             int gr_len = Convert.ToInt32(Math.Sqrt(gr.matrx.Length)); 
             int finish_idx = 0;
             bool[] visited = new bool[gr_len];
+            bool is_undirect;
             List<Route> branch = new List<Route>();
             int[] weights = new int[gr_len];
             for (int x = 0; x < gr_len; x++) weights[x] = int.MaxValue;
@@ -580,7 +581,9 @@ namespace Test
                                 tmp_sum += price[l];
                             }
 
-                            if (gr.matrx[branch[k].arr.Last().Stop, l] != 0 && !visited[l] && tmp_sum < weights[l])
+                            is_undirect = (!by_price && gr.matrx[branch[k].arr.Last().Stop, l] != -1) ? true : !visited[l];
+
+                            if (gr.matrx[branch[k].arr.Last().Stop, l] != 0 && is_undirect &&  tmp_sum < weights[l])
                             {
                                 end = false;
 
