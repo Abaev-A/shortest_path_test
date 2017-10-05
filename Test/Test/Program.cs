@@ -34,7 +34,6 @@ namespace Test
             if (RoutePrice(result[1]) == RoutePrice(result[0]))            
                 result[0] = result[1];           
 
-            // Самый короткий маршрут является самым дешевым
             Console.WriteLine("Самый дешевый маршрут:\n\n" + result[0].Description());
             Console.WriteLine("Самый короткий по времени маршрут:\n\n" + result[1].Description());
             Console.ReadLine();
